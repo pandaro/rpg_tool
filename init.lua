@@ -51,7 +51,14 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
 		meta:set_int('palette_index',1)
 		local owner = meta:set_string('owner',name)
 		local caps = itemstack:get_definition().tool_capabilities
-		tool_set(meta,puncher,caps)
+		meta:set_tool_capabilities({
+ 		max_drop_level=0,
+ 		groupcaps={
+ 			cracky={times={[2]=0.1, [3]=0.1}, uses=1000, maxlevel=1}
+ 		},
+ 		damage_groups = {fleshy=2},
+		})
+		puncher:set_wielded_item(itemstack)
 		return itemstack
 	end)
 
@@ -62,9 +69,7 @@ minetest.register_tool("rpg_tool:1", {
 	inventory_image = "default_tool_steelaxe.png",
 	palette='m.png',
 	base_tool = 'rpg_tool:2',
-	on_use= function()
-	
-	end,
+
 	on_place = function(itemstack, placer, pointed_thing)
 		print('on_placestart')
 		print(tostring(itemstack:to_table()))
@@ -75,7 +80,6 @@ minetest.register_tool("rpg_tool:1", {
 		local owner = meta:set_string('owner',name)
 		local caps = itemstack:get_definition().tool_capabilities
 		tool_set(meta,placer,caps)
-		minetest.override_item('rpg_tool:1',{on_use=nil})
 		return itemstack
 	end,
 	tool_capabilities = {
